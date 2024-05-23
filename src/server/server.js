@@ -26,22 +26,24 @@ const ClientError = require('../exceptions/ClientError');
     const response = request.response;
 
     if (response.isBoom) {
-      let customMessage;
-
-      if (response.output.statusCode === 413) {
-        customMessage =
-          'Payload content length greater than maximum allowed: 1000000';
-      } else if (response.output.statusCode === 400) {
-        customMessage = 'Terjadi kesalahan dalam melakukan prediksi';
+      if (response.output.statusCode === 400) {
+        const newResponse = h.response({
+          status: 'fail',
+          message: 'Terjadi kesalahan dalam melakukan prediksi',
+        });
+        newResponse.code(response.output.statusCode);
+        return newResponse;
       }
 
-      const newResponse = h.response({
-        status: 'fail',
-        message: customMessage,
-      });
-
-      newResponse.code(response.output.statusCode);
-      return newResponse;
+      if (response.output.statusCode === 413) {
+        const newResponse = h.response({
+          status: 'fail',
+          message:
+            'Payload content length greater than maximum allowed: 1000000',
+        });
+        newResponse.code(response.output.statusCode);
+        return newResponse;
+      }
     }
 
     return h.continue;
