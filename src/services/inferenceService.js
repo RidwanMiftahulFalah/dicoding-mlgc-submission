@@ -1,4 +1,5 @@
 const tf = require('@tensorflow/tfjs-node');
+const InputError = require('../exceptions/InputError');
 
 async function predictClassification(model, image) {
   try {
@@ -9,19 +10,12 @@ async function predictClassification(model, image) {
       .toFloat();
 
     const prediction = model.predict(tensor);
-    const classes = ['Cancer', 'Non-cancer'];
-    const classResult = tf.argMax(prediction, 1).dataSync()[0];
-    const label = classes[classResult];
+    const score = await prediction.data();
+    const confidenceScore = Math.max(...score) * 100;
 
-    let suggestion;
-
-    if (label === 'Cancer') {
-      suggestion = 'Segera periksa dan konsultasi ke dokter.';
-    }
-
-    if (label === 'Non-cancer') {
-      suggestion = 'Non-kanker.';
-    }
+    const label = confidenceScore > 50 ? 'Cancer' : 'Non-cancer';
+    const suggestion =
+      label === 'Cancer' ? 'Segera periksa ke dokter' : 'Non-kanker';
 
     return { label, suggestion };
   } catch (error) {

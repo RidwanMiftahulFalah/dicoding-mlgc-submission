@@ -9,15 +9,12 @@
     "start": "node ./src/server/server.js"
   },
   "keywords": [],
-  "author": "Ridwan Miftahul Falah <miftahridwan1101@gmail.com>",
+  "author": "",
   "license": "ISC",
   "dependencies": {
     "@google-cloud/firestore": "^7.7.0",
     "@hapi/hapi": "^21.3.9",
-    "@tensorflow/tfjs-node": "^3.1.0",
+    "@tensorflow/tfjs-node": "^4.14.0",
     "dotenv": "^16.4.5"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.0"
   }
 }
